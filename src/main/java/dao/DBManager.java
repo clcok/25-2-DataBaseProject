@@ -1,4 +1,4 @@
-package util;
+package main.java.dao;
 
 public class DBManager {
 }

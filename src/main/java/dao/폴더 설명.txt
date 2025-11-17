@@ -1,0 +1,24 @@
+데이터베이스에 접근하고, 데이터를 조회·저장·수정·삭제하는 역할만 전담하는 객체.
+
+즉, DB 관련 로직만 여기에서 사용.
+
+예시 코드
+근데 아래에서 DB Connection은 DB Manager에서 넣고 수정하면 될듯.
+public class UserDao {
+
+    public User findById(int id) {
+        String sql = "SELECT * FROM users WHERE id = ?";
+        Connection conn = getConnection();
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setInt(1, id);
+        ResultSet rs = pstmt.executeQuery();
+
+        if (rs.next()) {
+            return new User(
+                rs.getInt("id"),
+                rs.getString("name")
+            );
+        }
+        return null;
+    }
+}
