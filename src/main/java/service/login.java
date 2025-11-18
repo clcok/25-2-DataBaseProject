@@ -4,11 +4,11 @@ import java.util.Scanner;
 
 public class login {
 
-    Scanner sc = new Scanner(System.in);
+    static Scanner sc = new Scanner(System.in);
 
-    int input;
+    static int input;
 
-    public void loginMain(){
+    static public void loginMain(){
         System.out.println("환영합니다. SNS 입니다.");
 
         System.out.println("1. 로그인하기");
@@ -29,7 +29,7 @@ public class login {
         }
     }
 
-    public void loginSNS(){
+    static public void loginSNS(){
         String id, pw;
 
         System.out.println("아이디를 입력하세요.");
@@ -41,7 +41,7 @@ public class login {
         // DB와 연결
     }
 
-    public void searchPassword(){
+    static public void searchPassword(){
 
     }
 }
