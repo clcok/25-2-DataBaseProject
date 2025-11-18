@@ -14,7 +14,9 @@ public class login {
         System.out.println("1. 로그인하기");
         System.out.println("2. 비밀번호 찾기");
 
+        System.out.print("이동하고 싶은 메뉴 번호를 입력해주세요: ");
         input = sc.nextInt();
+        sc.nextLine();
 
         switch(input){
             case 1:
@@ -28,7 +30,15 @@ public class login {
     }
 
     public void loginSNS(){
+        String id, pw;
 
+        System.out.println("아이디를 입력하세요.");
+        id = sc.nextLine();
+        
+        System.out.println("비밀번호를 입력하세요. ");
+        pw = sc.nextLine();
+        
+        // DB와 연결
     }
 
     public void searchPassword(){
