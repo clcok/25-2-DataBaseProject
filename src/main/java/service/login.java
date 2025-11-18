@@ -32,13 +32,14 @@ public class login {
     static public void loginSNS(){
         String id, pw;
 
-        System.out.println("아이디를 입력하세요.");
+        System.out.print("아이디를 입력하세요: ");
         id = sc.nextLine();
         
-        System.out.println("비밀번호를 입력하세요. ");
+        System.out.print("비밀번호를 입력하세요: ");
         pw = sc.nextLine();
         
         // DB와 연결
+        // DB에서 찾고 없으면 0 반환 있으면 1 반환하도록?
     }
 
     static public void searchPassword(){
