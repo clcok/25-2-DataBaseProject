@@ -24,6 +24,7 @@ public class login {
                 break;
             case 2:
                 searchPassword();
+                break;
             default:
                 System.out.println("잘못된 입력입니다.");
         }
@@ -43,6 +44,21 @@ public class login {
     }
 
     static public void searchPassword(){
+        String name, id, birthdate;
+        char sex;
+
+        System.out.print("이름을 입력하세요: ");
+        name = sc.nextLine();
+        System.out.print("아이디를 입력하세요: ");
+        id =  sc.nextLine();
+        System.out.print("성별을 입력하세요(M/F): ");
+        sex = sc.next().charAt(0); // 문자열을 입력해도 하나만 받아들임
+        sc.nextLine(); // \0을 제외하기 위해 nextLine() 호출
+        
+        System.out.print("생년월일을 입력하세요: ");
+        birthdate = sc.nextLine();
+        
+        // DB연결 후 확인하는 로직 필요
 
     }
 }
