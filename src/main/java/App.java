@@ -61,5 +61,28 @@ public class App {
                     users.get(i).getName(),
                     users.get(i).getUserid());
         }
+
+        System.out.print("조회할 사용자 번호를 입력하세요 (0: 뒤로가기): ");
+        int choice = Integer.parseInt(sc.nextLine());
+
+        if (choice == 0) return;
+        if (choice < 1 || choice > users.size()) {
+            System.out.println("잘못된 번호입니다.");
+            return;
+        }
+
+        // 선택된 사용자
+        User target = users.get(choice - 1);
+        showUserProfile(target);
+    }
+
+    private static void showUserProfile(User target) {
+        String targetId = target.getUserid();
+
+        System.out.println("===== 사용자 프로필 =====");
+        System.out.println("이름: " + target.getName());
+        System.out.println("UserId: " + targetId);
+
+        // 여기 나중에 좋아요 수, 팔로워/팔로잉 수, 팔로우 버튼 붙일거야
     }
 }
