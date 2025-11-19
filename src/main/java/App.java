@@ -16,6 +16,8 @@ public class App {
     private static final UserDAO userDAO = new UserDAO();
     private static final LikeDAO likeDAO = new LikeDAO();
     private static final FollowDAO followDAO = new FollowDAO();
+    private static final LikeDAO likeDAO = new LikeDAO();
+    private static final FollowDAO followDAO = new FollowDAO();
 
     public static void main(String[] args) {
 
@@ -83,12 +85,12 @@ public class App {
     private static void showUserProfile(User target) {
         String targetId = target.getUserid();
 
-        // 1) DAO에서 숫자들 가져오기
+        // 1) 좋아요 / 팔로워 / 팔로잉 숫자 가져오기
         int totalLikes    = likeDAO.countLikesReceived(targetId);
         int followerCount = followDAO.countFollowers(targetId);
         int followingCount= followDAO.countFollowing(targetId);
 
-        // 2) 출력
+        // 2) 기본 정보 + 통계 출력
         System.out.println("===== 사용자 프로필 =====");
         System.out.println("이름: " + target.getName());
         System.out.println("UserId: " + targetId);
@@ -96,6 +98,48 @@ public class App {
         System.out.println("팔로워: " + followerCount);
         System.out.println("팔로잉: " + followingCount);
 
-        // 팔로우/언팔/맞팔 메뉴 붙일 예정
+        // 3) 자기 자신이면 팔로우 메뉴 안 띄우기
+        if (targetId.equals(currentUserId)) {
+            System.out.println("(내 계정이므로 팔로우 메뉴는 표시하지 않습니다.)");
+            return;
+        }
+
+        // 4) 팔로우 상태 조회
+        boolean iFollow     = followDAO.isIFollow(currentUserId, targetId);
+        boolean heFollowsMe = followDAO.isHeFollowsMe(currentUserId, targetId);
+
+        String actionLabel;
+        if (!iFollow && !heFollowsMe) {
+            actionLabel = "팔로우하기";
+        } else if (iFollow && !heFollowsMe) {
+            actionLabel = "언팔로우하기";
+        } else if (!iFollow && heFollowsMe) {
+            actionLabel = "맞팔로우하기";
+        } else { // 둘 다 true
+            actionLabel = "언팔로우하기 (맞팔 상태)";
+        }
+
+        System.out.println();
+        System.out.println("1. " + actionLabel);
+        System.out.println("2. 뒤로가기");
+        System.out.print("선택: ");
+
+        int menu = Integer.parseInt(sc.nextLine());
+
+        if (menu == 1) {
+            if (!iFollow && !heFollowsMe) {
+                followDAO.follow(currentUserId, targetId);
+                System.out.println("팔로우했습니다.");
+            } else if (iFollow && !heFollowsMe) {
+                followDAO.unfollow(currentUserId, targetId);
+                System.out.println("언팔로우했습니다.");
+            } else if (!iFollow && heFollowsMe) {
+                followDAO.follow(currentUserId, targetId);
+                System.out.println("맞팔로우가 되었습니다!");
+            } else {
+                followDAO.unfollow(currentUserId, targetId);
+                System.out.println("언팔로우했습니다.");
+            }
+        }
     }
 }

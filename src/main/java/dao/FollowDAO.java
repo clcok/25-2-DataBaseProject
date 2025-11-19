@@ -56,4 +56,42 @@ public class FollowDAO {
         return cnt;
     }
 
+    public void follow(String me, String target) {
+        String sql = "INSERT INTO FOLLOW (Follower_id, Following_id) VALUES (?, ?)";
+
+        try {
+            Connection conn = DBManager.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            pstmt.setString(1, me);
+            pstmt.setString(2, target);
+
+            pstmt.executeUpdate();
+
+            pstmt.close();
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void unfollow(String me, String target) {
+        String sql = "DELETE FROM FOLLOW WHERE Follower_id = ? AND Following_id = ?";
+
+        try {
+            Connection conn = DBManager.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            pstmt.setString(1, me);
+            pstmt.setString(2, target);
+
+            pstmt.executeUpdate();
+
+            pstmt.close();
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
