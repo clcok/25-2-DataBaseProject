@@ -1,5 +1,7 @@
 package main.java;
 
+import main.java.dao.FollowDAO;
+import main.java.dao.LikeDAO;
 import main.java.dao.UserDAO;
 import main.java.dto.User;
 
@@ -12,6 +14,8 @@ public class App {
 
     private static final Scanner sc = new Scanner(System.in);
     private static final UserDAO userDAO = new UserDAO();
+    private static final LikeDAO likeDAO = new LikeDAO();
+    private static final FollowDAO followDAO = new FollowDAO();
 
     public static void main(String[] args) {
 
@@ -79,10 +83,19 @@ public class App {
     private static void showUserProfile(User target) {
         String targetId = target.getUserid();
 
+        // 1) DAO에서 숫자들 가져오기
+        int totalLikes    = likeDAO.countLikesReceived(targetId);
+        int followerCount = followDAO.countFollowers(targetId);
+        int followingCount= followDAO.countFollowing(targetId);
+
+        // 2) 출력
         System.out.println("===== 사용자 프로필 =====");
         System.out.println("이름: " + target.getName());
         System.out.println("UserId: " + targetId);
+        System.out.println("좋아요 총 수: " + totalLikes);
+        System.out.println("팔로워: " + followerCount);
+        System.out.println("팔로잉: " + followingCount);
 
-        // 여기 나중에 좋아요 수, 팔로워/팔로잉 수, 팔로우 버튼 붙일거야
+        // 팔로우/언팔/맞팔 메뉴 붙일 예정
     }
 }
