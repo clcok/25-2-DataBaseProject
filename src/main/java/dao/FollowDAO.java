@@ -94,4 +94,56 @@ public class FollowDAO {
         }
     }
 
+    public boolean isIFollow(String me, String target) {
+        String sql = "SELECT COUNT(*) AS cnt FROM FOLLOW " +
+                "WHERE Follower_id = ? AND Following_id = ?";
+        int cnt = 0;
+
+        try {
+            Connection conn = DBManager.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, me);      // 내가
+            pstmt.setString(2, target);  // 상대를
+
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                cnt = rs.getInt("cnt");
+            }
+
+            rs.close();
+            pstmt.close();
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return cnt > 0;
+    }
+
+    public boolean isHeFollowsMe(String me, String target) {
+        String sql = "SELECT COUNT(*) AS cnt FROM FOLLOW " +
+                "WHERE Follower_id = ? AND Following_id = ?";
+        int cnt = 0;
+
+        try {
+            Connection conn = DBManager.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, target);  // 상대가
+            pstmt.setString(2, me);      // 나를
+
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                cnt = rs.getInt("cnt");
+            }
+
+            rs.close();
+            pstmt.close();
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return cnt > 0;
+    }
+
 }

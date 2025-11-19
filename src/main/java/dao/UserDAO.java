@@ -29,10 +29,7 @@ public class UserDAO {
             while (rs.next()) {
                 User user = new User(
                         rs.getString("Userid"),
-                        rs.getString("Name"),
-                        rs.getString("Password"),
-                        rs.getString("Sex"),
-                        rs.getDate("Birth_date")
+                        rs.getString("Name")
                 );
                 result.add(user);
             }

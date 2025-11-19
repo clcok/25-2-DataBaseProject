@@ -16,8 +16,8 @@ public class App {
     private static final UserDAO userDAO = new UserDAO();
     private static final LikeDAO likeDAO = new LikeDAO();
     private static final FollowDAO followDAO = new FollowDAO();
-    private static final LikeDAO likeDAO = new LikeDAO();
-    private static final FollowDAO followDAO = new FollowDAO();
+
+    private static String currentUserId = "test17"; // TODO: 로그인 붙이면 삭제
 
     public static void main(String[] args) {
 
@@ -29,13 +29,16 @@ public class App {
 
         System.out.println("[사용자 검색]");
         System.out.println("1. 아이디로 검색");
-        System.out.println("2. 이름으로 검색");
         System.out.println("0. 뒤로가기");
         System.out.print("선택: ");
 
         int menu = Integer.parseInt(sc.nextLine());
 
         if (menu == 0) return;
+        if (menu != 1) {
+            System.out.println("잘못된 입력입니다.");
+            return;
+        }
 
         System.out.print("검색할 아이디 일부를 입력하세요: ");
         String keyword = sc.nextLine();
@@ -43,14 +46,7 @@ public class App {
         List<User> users = new ArrayList<>();
 
         try {
-            if (menu == 1) {
-                users = userDAO.findByUserIdKeyword(keyword);
-            } else if (menu == 2) {
-                users = userDAO.findByNameKeyword(keyword);
-            } else {
-                System.out.println("잘못된 입력입니다.");
-                return;
-            }
+            users = userDAO.findByUserIdKeyword(keyword);   // ← 무조건 아이디 검색만
         } catch (Exception e) {
             e.printStackTrace();
         }
