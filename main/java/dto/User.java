@@ -9,15 +9,15 @@ public class User {
     private String password;
     private String name;
     private String sex;        // DDL의 'Sex' 컬럼 (M/F)
-    private String birthdate;  // DDL의 'Birth_date' 컬럼 (YYYY-MM-DD 문자열 처리)
-    private Timestamp createdAt; // 가입일 (DDL에는 없지만 로직상 필요하여 유지, null 가능)
+    private String birthdate;  // DDL의 'Birth_date' 컬럼 (YYMMDD 문자열 처리)
+    private Timestamp createdAt; // 가입일 (DDL에는 없지만 로직상 필요할 수 있어 유지, null 가능)
 
     // 프로필 조회 시 사용할 추가 필드 (조인 결과 저장용)
     private int totalLikes;
     private int followerCount;
     private int followingCount;
 
-    // 생성자 (UserDAO.login 및 App.java 테스트용)
+    // 기본 생성자 (UserDAO에서 조회 시 사용)
     public User(String userId, String password, String name, String sex, String birthdate, Timestamp createdAt) {
         this.userId = userId;
         this.password = password;

@@ -21,13 +21,21 @@ public class PostDAO {
         "FROM POST p ";
 
     /**
+     * [추가됨] 특정 유저(나)의 게시물 목록 조회
+     */
+    public List<Post> findPostsByUserId(String userId) {
+        String sql = BASE_SELECT + 
+                     "WHERE p.User_id = ? " +
+                     "ORDER BY p.Created_at DESC";
+        
+        return getPostsByQuery(sql, userId);
+    }
+
+    /**
      * 1. 추천 게시물 조회 (가중치 기반 알고리즘 적용)
-     * - 내가 좋아요를 많이 누른 '라벨'이 포함된 게시물일수록 상단에 노출됩니다.
-     * - (WITH절: 오라클 9i 이상 지원, 가독성과 성능을 위해 사용)
      */
     public List<Post> findRecommendedPosts(String userId) {
         String sql = 
-            // [1단계] 내 선호도 분석: 내가 좋아요 누른 게시물의 라벨별 횟수(가중치) 계산
             "WITH UserPrefs AS ( " +
             "    SELECT l.Label_name, COUNT(*) as Weight " +
             "    FROM LIKES k " +
@@ -36,17 +44,15 @@ public class PostDAO {
             "    WHERE k.User_id = ? " +
             "    GROUP BY l.Label_name " +
             "), " +
-            // [2단계] 게시물 점수 매기기: 해당 라벨을 가진 게시물들에 가중치 합산 점수 부여
             "PostScores AS ( " +
             "    SELECT p.Post_id, SUM(up.Weight) as TotalScore " +
             "    FROM POST p " +
             "    JOIN IMAGE i ON p.Post_id = i.Post_id " +
             "    JOIN LABEL l ON i.Image_dir = l.Image_dir " +
             "    JOIN UserPrefs up ON l.Label_name = up.Label_name " +
-            "    WHERE p.User_id != ? " + // 내가 쓴 글은 제외
+            "    WHERE p.User_id != ? " +
             "    GROUP BY p.Post_id " +
             ") " +
-            // [3단계] 최종 조회: 점수(TotalScore) 높은 순으로 정렬
             "SELECT p.Post_id, p.Content, p.Created_at, p.User_id, " +
             "       (SELECT COUNT(*) FROM LIKES l WHERE l.Post_id = p.Post_id) as LikeCount, " +
             "       NULL as RepImage " +
@@ -54,8 +60,6 @@ public class PostDAO {
             "JOIN PostScores ps ON p.Post_id = ps.Post_id " +
             "ORDER BY ps.TotalScore DESC, p.Created_at DESC";
 
-        // 첫 번째 ? = userId (선호도 분석용)
-        // 두 번째 ? = userId (내 글 제외용)
         return getPostsByQuery(sql, userId, userId);
     }
 
@@ -100,7 +104,7 @@ public class PostDAO {
             conn.setAutoCommit(false);
 
             int newPostId = 0;
-            String seqSql = "SELECT SEQ_POST_ID.NEXTVAL FROM DUAL";
+            String seqSql = "SELECT NVL(MAX(Post_id), 0) + 1 FROM POST";
             pstmt = conn.prepareStatement(seqSql);
             rs = pstmt.executeQuery();
             if (rs.next()) newPostId = rs.getInt(1);
@@ -124,14 +128,14 @@ public class PostDAO {
             }
 
             if (hashtags != null && !hashtags.isEmpty()) {
-                String insertTag = "INSERT INTO HASHTAG (Hashtag_id, Hashtag_name, Post_id) VALUES (SEQ_HASHTAG_ID.NEXTVAL, ?, ?)";
+                String insertTag = "INSERT INTO HASHTAG (Hashtag_id, Hashtag_name, Post_id) " + 
+                                   "VALUES ((SELECT NVL(MAX(Hashtag_id), 0) + 1 FROM HASHTAG), ?, ?)";
                 pstmt = conn.prepareStatement(insertTag);
                 for (String tag : hashtags) {
                     pstmt.setString(1, tag);
                     pstmt.setInt(2, newPostId);
-                    pstmt.addBatch();
+                    pstmt.executeUpdate();
                 }
-                pstmt.executeBatch();
             }
 
             conn.commit();
